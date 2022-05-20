@@ -5,6 +5,8 @@ import { useState } from "react";
 import { Button } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 
+import "./Login.css";
+
 const Login1 = function (mail, pswd) {
   const url = "http://sefdb02.qut.edu.au:3001/user/login";
 

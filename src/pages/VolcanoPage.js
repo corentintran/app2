@@ -1,5 +1,29 @@
 import React from "react";
+
+//Map
 import { Map, Marker } from "pigeon-maps";
+
+//ChartBar
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+} from "chart.js";
+
+import { Bar } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 import "./VolcanoPage.css";
 
@@ -53,10 +77,10 @@ export default function VolcanoPage() {
               elevation: volcandata.elevation,
               latitude: volcandata.latitude,
               longitude: volcandata.longitude,
-              fivekm: volcandata.population_5km,
-              tenkm: volcandata.population_10km,
-              thirtykm: volcandata.population_30km,
-              hundredkm: volcandata.population_100km
+              population_5km: volcandata.population_5km,
+              population_10km: volcandata.population_10km,
+              population_30km: volcandata.population_30km,
+              population_100km: volcandata.population_100km
             };
           })
         )
@@ -84,12 +108,38 @@ export default function VolcanoPage() {
     }
   }, []);
 
-  // La CARTE
-
   const latitude = parseFloat(VolcanData.latitude);
   const longitude = parseFloat(VolcanData.longitude);
 
   if (token !== "null") {
+    const options = {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: "Population Density around the Volcano "
+        }
+      }
+    };
+
+    const labels = ["5km", "10km", "30km", "100km"];
+
+    const data = {
+      labels,
+      datasets: [
+        {
+          label: "Population density",
+          data: [
+            VolcanData.population_5km,
+            VolcanData.population_10km,
+            VolcanData.population_30km,
+            VolcanData.population_100km
+          ],
+          backgroundColor: "rgba(0, 150, 0, 0.5)"
+        }
+      ]
+    };
+
     return (
       <div className="Container">
         <Navigation />
@@ -102,8 +152,6 @@ export default function VolcanoPage() {
           <p> Last Eruption: {VolcanData.last_eruption}</p>
           <p> Summit: {VolcanData.summit}</p>
           <p> Elevation: {VolcanData.elevation}</p>
-
-          <textarea value={JSON.stringify(VolcanData)}></textarea>
 
           <Button
             color="info"
@@ -120,6 +168,8 @@ export default function VolcanoPage() {
             <Marker width={50} anchor={[latitude, longitude]} />
           </Map>
         </div>
+
+        <Bar options={options} data={data} />
       </div>
     );
   } else {
@@ -135,8 +185,6 @@ export default function VolcanoPage() {
           <p> Last Eruption: {VolcanData.last_eruption}</p>
           <p> Summit: {VolcanData.summit}</p>
           <p> Elevation: {VolcanData.elevation}</p>
-
-          <textarea value={JSON.stringify(VolcanData)}></textarea>
 
           <Button
             color="info"
